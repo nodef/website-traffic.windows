@@ -37,8 +37,10 @@
 			this.fProgress = new System.Windows.Forms.ProgressBar();
 			this.fBrowser = new System.Windows.Forms.WebBrowser();
 			this.fRounds = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.dRounds = new System.Windows.Forms.Label();
 			this.fListURL = new System.Windows.Forms.TextBox();
+			this.dStayTime = new System.Windows.Forms.Label();
+			this.fStayTime = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			// 
 			// fURL
@@ -114,21 +116,21 @@
 			// 
 			// fRounds
 			// 
-			this.fRounds.Location = new System.Drawing.Point( 98, 297 );
+			this.fRounds.Location = new System.Drawing.Point( 65, 297 );
 			this.fRounds.Name = "fRounds";
-			this.fRounds.Size = new System.Drawing.Size( 187, 20 );
+			this.fRounds.Size = new System.Drawing.Size( 78, 20 );
 			this.fRounds.TabIndex = 12;
 			this.fRounds.Text = "20";
 			this.fRounds.Leave += new System.EventHandler( this.fRounds_Leave );
 			// 
-			// label1
+			// dRounds
 			// 
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point( 12, 300 );
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size( 80, 13 );
-			this.label1.TabIndex = 13;
-			this.label1.Text = "Access rounds:";
+			this.dRounds.AutoSize = true;
+			this.dRounds.Location = new System.Drawing.Point( 12, 300 );
+			this.dRounds.Name = "dRounds";
+			this.dRounds.Size = new System.Drawing.Size( 47, 13 );
+			this.dRounds.TabIndex = 13;
+			this.dRounds.Text = "Rounds:";
 			// 
 			// fListURL
 			// 
@@ -140,14 +142,34 @@
 			this.fListURL.Size = new System.Drawing.Size( 273, 185 );
 			this.fListURL.TabIndex = 14;
 			// 
+			// dStayTime
+			// 
+			this.dStayTime.AutoSize = true;
+			this.dStayTime.Location = new System.Drawing.Point( 151, 300 );
+			this.dStayTime.Name = "dStayTime";
+			this.dStayTime.Size = new System.Drawing.Size( 57, 13 );
+			this.dStayTime.TabIndex = 15;
+			this.dStayTime.Text = "Stay Time:";
+			// 
+			// fStayTime
+			// 
+			this.fStayTime.Location = new System.Drawing.Point( 214, 297 );
+			this.fStayTime.Name = "fStayTime";
+			this.fStayTime.Size = new System.Drawing.Size( 71, 20 );
+			this.fStayTime.TabIndex = 16;
+			this.fStayTime.Text = "4";
+			this.fStayTime.Leave += new System.EventHandler( this.fStayTime_Leave );
+			// 
 			// WebTraffic
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size( 675, 426 );
+			this.Controls.Add( this.fStayTime );
+			this.Controls.Add( this.dStayTime );
 			this.Controls.Add( this.fListURL );
-			this.Controls.Add( this.label1 );
+			this.Controls.Add( this.dRounds );
 			this.Controls.Add( this.fRounds );
 			this.Controls.Add( this.fBrowser );
 			this.Controls.Add( this.fProgress );
@@ -178,8 +200,10 @@
 		private System.Windows.Forms.ProgressBar fProgress;
 		private System.Windows.Forms.WebBrowser fBrowser;
 		private System.Windows.Forms.TextBox fRounds;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.Label dRounds;
 		private System.Windows.Forms.TextBox fListURL;
+		private System.Windows.Forms.Label dStayTime;
+		private System.Windows.Forms.TextBox fStayTime;
 	}
 }
 
