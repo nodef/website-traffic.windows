@@ -15,47 +15,29 @@ namespace WebTraffic
 		public WebTraffic()
 		{
 			InitializeComponent();
-			// initialize weblist
-			WebList = new List<string>();
 			// initialize progress bar
 			fProgress.Maximum = 1024;
 			fProgress.Minimum = 0;
+			fProgress.Value = 0;
+			// hkWebTraffic.Start();
 		}
 
 		private void wbtnStart_Click(object sender, EventArgs e)
 		{
 			// start progress bar
 			fProgress.Value = 0;
-			// start run thread
-			thWebTraffic = new Thread(() => tRunWebTraffic(WebList));
-			thWebTraffic.Name = "WebTraffic";
-			thWebTraffic.IsBackground = true;
-			thWebTraffic.Start();
+			hkWebTraffic.StartExec();
 		}
 
 		private void wbtnStop_Click(object sender, EventArgs e)
 		{
 			//stop run thread
-			if(thWebTraffic != null) thWebTraffic.Abort();
+			hkWebTraffic.StopExec();
 			// stop progress bar
 			fProgress.Value = 0;
 		}
 
-		private int fAccessPage(string web_page)
-		{
-			// WebBrowser wb = new WebBrowser();
-			wbrsrStatus = true;
-			// wb.Navigate(web_page);
-			// Thread.Sleep(10000);
-			wbrsrIE0.ScriptErrorsSuppressed = true;
-			wbrsrIE0.Navigate(web_page);
-			do
-			{
-				Thread.Sleep(10000);
-			} while (wbrsrStatus) ;
-			return 0;
-		}
-
+		/*
 		private int fAccessPage_webresp(string web_page)
 		{
 			WebRequest wrq = WebRequest.Create(web_page);
@@ -68,66 +50,55 @@ namespace WebTraffic
 			wrs.Close();
 			return 0;
 		}
+		*/
 
-		private void tRunWebTraffic(List<string> web_list)
-		{
-			int i;
-
-			while (true)
-			{
-				// if (wAccessCount > 0) continue;
-				for (i = 0; i < web_list.Count; i++)
-				{
-					fAccessPage(web_list[i]);
-					wAccessProgress = (i * 1024) / web_list.Count;
-				}
-				if(web_list.Count > 0) wAccessCount++;
-			}
-		}
-
-		private void fShowWebList()
+		// updates the list url
+		public void UpdateListURL()
 		{
 			int i;
 			string str = "";
 
-			for (i = 0; i < WebList.Count; i++)
+			for (i = 0; i < hkWebTraffic.ListURL.Count; i++)
 			{
-				str += WebList[i] + "\n";
+				str += hkWebTraffic.ListURL[i] + "\r\n";
 			}
 			fListURL.Text = str;
 		}
 
-		private void wbtnAdd_Click(object sender, EventArgs e)
+		// update progress bar
+		public void UpdateProgress ()
 		{
-			WebList.Add(wtxtWebAddress.Text);
-			fShowWebList();
+			// update progress bar
+			fProgress.Minimum = hkWebTraffic.Access.Start;
+			fProgress.Maximum = hkWebTraffic.Access.Stop;
+			fProgress.Value = hkWebTraffic.Access.Current;
 		}
 
-		private void wbtnRemove_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				WebList.Remove(wtxtWebAddress.Text);
-			}
-			catch (Exception) { }
-			fShowWebList();
-		}
-
+		// paint window
 		private void WebTraffic_Paint(object sender, PaintEventArgs e)
 		{
-			fProgress.Value = wAccessProgress;
-			wlblAccessCount.Text = wAccessCount.ToString();
+			UpdateProgress();
 		}
 
-		private void WebTraffic_FormClosed(object sender, FormClosedEventArgs e)
+		// add url to list
+		private void fAdd_Click (object sender, EventArgs e)
 		{
-			//stop run thread
-			if(thWebTraffic != null) thWebTraffic.Abort();
+			hkWebTraffic.ListURL.Add( fURL.Text );
+			UpdateListURL();
 		}
 
-		private void wbrsrIE0_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+		// remove url from list
+		private void fRemove_Click (object sender, EventArgs e)
 		{
-			wbrsrStatus = false;
+			hkWebTraffic.ListURL.Remove( fURL.Text );
+			UpdateListURL();
+		}
+
+		// update access rounds upon focus change
+		private void fRounds_Leave (object sender, EventArgs e)
+		{
+			int.TryParse( fRounds.Text, out hkWebTraffic.Access.Stop );
+			UpdateProgress();
 		}
 	}
 }
