@@ -30,7 +30,8 @@ namespace WebTraffic
 		List<string> ListURL;
 		Thread thLoop;
 		int StayTime, NextTime, BrowserCount;
-		string LocalBrowser = @"C:\Users\Subhajit\AppData\Local\Google\Chrome\Application\chrome.exe";
+		string BrowserOpera = @"C:\Program Files (x86)\Opera\opera.exe";
+		string BrowserChrome = @"C:\Users\Subhajit\AppData\Local\Google\Chrome\Application\chrome.exe";
 
 		// create new form instance
 		public WebTraffic ()
@@ -84,6 +85,7 @@ namespace WebTraffic
 			if (thLoop == null) return -1;
 			thLoop.Abort();
 			thLoop = null;
+			CloseBrowsers_Chrome();
 			return 0;
 		}
 
@@ -96,7 +98,7 @@ namespace WebTraffic
 			{
 				for (i = 0, j = 0 ; i < ListURL.Count ; i++)
 				{
-					j += ( AccessURL( ListURL[i] ) == 0 ) ? 1 : 0;
+					j += ( AccessURL_Chrome( ListURL[i] ) == 0 ) ? 1 : 0;
 				}
 				if (ListURL.Count > 0 && j == ListURL.Count)
 				{
@@ -106,13 +108,26 @@ namespace WebTraffic
 			}
 		}
 
-		// access a particular url for a duration using opera
-		private int AccessURL (string url)
+		// close all running browsers
+		private int CloseBrowsers_Opera ()
 		{
-			int i, n;
+			while (Browser.Count > 0)
+			{
+				Browser[0].Refresh();
+				Browser[0].CloseMainWindow();
+				// try { Browser[0].CloseMainWindow(); }
+				// catch (Exception) { }
+				Browser.RemoveAt( 0 );
+			}
+			return 0;
+		}
+
+		// access a particular url for a duration using chrome
+		private int AccessURL_Opera (string url)
+		{
 			Process p = null;
-			
-			ProcessStartInfo psInfo = new ProcessStartInfo( LocalBrowser, "--new-window " + url );
+
+			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserOpera, "-newprivatetab " + url );
 			psInfo.CreateNoWindow = false;
 			psInfo.UseShellExecute = false;
 			psInfo.WindowStyle = ProcessWindowStyle.Normal;
@@ -123,13 +138,42 @@ namespace WebTraffic
 			else
 			{
 				Thread.Sleep( StayTime );
-				n = Browser.Count;
-				for (i = 0 ; i < n ; i++)
-				{
-					try { Browser[i].Kill(); }
-					catch (Exception) { }
-				}
-				Browser.RemoveAll( browser => true );
+				CloseBrowsers_Opera();
+			}
+			return 0;
+		}
+
+		// close all running browsers
+		private int CloseBrowsers_Chrome ()
+		{
+			int i;
+
+			Process[] p = Process.GetProcessesByName( "chrome" );
+			for (i = 0 ; i < p.Length ; i++)
+			{
+				p[i].Kill();
+			}
+			Browser.RemoveAll( browser => true );
+			return 0;
+		}
+
+		// access a particular url for a duration using chrome
+		private int AccessURL_Chrome (string url)
+		{
+			Process p = null;
+			
+			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserChrome, "--new-window " + url );
+			psInfo.CreateNoWindow = false;
+			psInfo.UseShellExecute = false;
+			psInfo.WindowStyle = ProcessWindowStyle.Normal;
+			try { p = Process.Start( psInfo ); }
+			catch (Exception) { }
+			if (p != null) Browser.Add( p );
+			if (Browser.Count < BrowserCount) Thread.Sleep( NextTime );
+			else
+			{
+				Thread.Sleep( StayTime );
+				CloseBrowsers_Chrome();
 			}
 			return 0;
 		}
