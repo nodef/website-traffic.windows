@@ -13,79 +13,110 @@ using System.Diagnostics;
 
 namespace WebTraffic
 {
-	public struct hkActivityStatus
+	public struct hkRound
 	{
 		public int	Start;
 		public int	Current;
 		public int	Stop;
 	};
+	public enum hkBrowser:int
+	{
+		None = -1,
+		Chrome = 0,
+		Opera = 1,
+		Firefox = 2,
+		IE = 3
+	};
 
 	public partial class WebTraffic : Form
 	{
-		// delegate void DelUpdateProgress ();
-		// DelUpdateProgress UpdateDisplay;
-		WebTraffic Window;
-		List<Process> Browser;
-		hkActivityStatus Access;
-		List<string> ListURL;
-		Thread thLoop;
-		int StayTime, NextTime, BrowserCount;
-		string BrowserOpera = @"C:\Program Files (x86)\Opera\opera.exe";
-		string BrowserChrome = @"C:\Users\Subhajit\AppData\Local\Google\Chrome\Application\chrome.exe";
+		WebTraffic		Window;
+		List<Process>	BrowserProc;
+		hkRound			Round;
+		List<string>	ListURL;
+		Thread			thExec;
+		string[]		BrowserParam, BrowserName, BrowserPath;
+		int				StayTime, NextTime, BrowserCount;
+		hkBrowser		Browser;
+		string			SettingsFile;
+		bool			ExecPaused;
 
 		// create new form instance
 		public WebTraffic ()
 		{
+			string[] strTemp = new string[4];
+
 			InitializeComponent();
-			fProgress.Maximum = 1024;
-			fProgress.Minimum = 0;
-			fProgress.Value = 0;
 			Window = this;
-			Start();
-		}
-
-		// start web traffic process (call only once)
-		private int Start ()
-		{
-			double temp = 0.0;
-
-			// initialize List URL
+			BrowserProc = new List<Process>();
 			ListURL = new List<string>();
-			Browser = new List<Process>();
-			Access.Start = 0;
-			Access.Current = 0;
-			int.TryParse( fRounds.Text, out Access.Stop );
-			Access.Stop = ( Access.Stop <= 0 ) ? 20 : Access.Stop;
-			double.TryParse( fStayTime.Text, out temp );
-			StayTime = (int) ( temp * 1000 );
-			StayTime = ( StayTime <= 0 ) ? 4000 : StayTime;
-			double.TryParse( fNextTime.Text, out temp );
-			NextTime = (int) ( temp * 1000 );
-			NextTime = ( NextTime <= 0 ) ? 4000 : NextTime;
-			int.TryParse( fBrowserCount.Text, out BrowserCount );
-			return 0;
+			thExec = null;
+			BrowserParam = new string[4];
+			BrowserParam[(int) hkBrowser.Chrome] = "--new-window ";
+			BrowserParam[(int) hkBrowser.Opera] = "-newprivatetab ";
+			BrowserParam[(int) hkBrowser.Firefox] = "-private -new-tab ";
+			BrowserParam[(int) hkBrowser.IE] = "-private ";
+			BrowserName = new string[4];
+			BrowserName[(int) hkBrowser.Chrome] = "chrome";
+			BrowserName[(int) hkBrowser.Opera] = "opera";
+			BrowserName[(int) hkBrowser.Firefox] = "firefox";
+			BrowserName[(int) hkBrowser.IE] = "iexplore";
+			Browser = hkBrowser.None;
+			// get browser path settings
+			SettingsFile = "settings.ini";
+			try { strTemp = File.ReadAllLines( SettingsFile ); }
+			catch (Exception) { }
+			BrowserPath = new string[4];
+			for (int i=0 ; i < 4 ; i++)
+			{
+				if (strTemp.Length > i && strTemp[i] != null) BrowserPath[i] = strTemp[i];
+				else BrowserPath[i] = "";
+			}
+			ExecPaused = false;
+			fPauseExec.Enabled = false;
 		}
 
 		// start thread execution
 		private int StartExec ()
 		{
+			if (Browser == hkBrowser.None) return -1;
+			// update changing parameters
+			Round.Start = 0;
+			Round.Current = 0;
+			try
+			{
+				Round.Stop = int.Parse( fRounds.Text );
+				StayTime = (int) ( double.Parse( fStayTime.Text ) * 1000 );
+				NextTime = (int) ( double.Parse( fNextTime.Text ) * 1000 );
+				BrowserCount = int.Parse( fBrowserCount.Text );
+			}
+			catch (Exception) { }
+			UpdateProgress();
+			fStartExec.Enabled = false;
+			fPauseExec.Enabled = true;
 			// start exec thread
-			if (thLoop != null) return -1;
-			thLoop = new Thread( () => Exec( ListURL ) );
-			thLoop.Name = "WebTraffic_Exec";
-			thLoop.IsBackground = true;
-			thLoop.Start();
-			return 0;
+			if (thExec == null || thExec.ThreadState == System.Threading.ThreadState.Stopped)
+			{
+				CloseBrowsers();
+				thExec = new Thread( () => Exec( ListURL ) );
+				thExec.Name = "WebTraffic_Exec";
+				thExec.IsBackground = true;
+				thExec.Start();
+				return 0;
+			}
+			return -1;
 		}
 
 		// stop thread execution
 		private int StopExec ()
 		{
 			// stop exec thread
-			if (thLoop == null) return -1;
-			thLoop.Abort();
-			thLoop = null;
-			CloseBrowsers_Chrome();
+			if (thExec == null) return -1;
+			thExec.Abort();
+			thExec = null;
+			CloseBrowsers();
+			fPauseExec.Enabled = false;
+			fStartExec.Enabled = true;
 			return 0;
 		}
 
@@ -94,127 +125,78 @@ namespace WebTraffic
 		{
 			int i, j;
 
-			while (Access.Current < Access.Stop)
+			while (Round.Current < Round.Stop)
 			{
+				while (ExecPaused || list_url.Count == 0) { Thread.Sleep( 2000 ); }
 				for (i = 0, j = 0 ; i < ListURL.Count ; i++)
 				{
-					j += ( AccessURL_Chrome( ListURL[i] ) == 0 ) ? 1 : 0;
+					j += ( AccessURL( ListURL[i] ) == 0 ) ? 1 : 0;
 				}
 				if (ListURL.Count > 0 && j == ListURL.Count)
 				{
-					Access.Current++;
+					Round.Current++;
 					UpdateProgress();
 				}
 			}
+			CloseBrowsers();
+			RefreshExec();
 		}
 
 		// close all running browsers
-		private int CloseBrowsers_Opera ()
-		{
-			while (Browser.Count > 0)
-			{
-				Browser[0].Refresh();
-				Browser[0].CloseMainWindow();
-				// try { Browser[0].CloseMainWindow(); }
-				// catch (Exception) { }
-				Browser.RemoveAt( 0 );
-			}
-			return 0;
-		}
-
-		// access a particular url for a duration using chrome
-		private int AccessURL_Opera (string url)
-		{
-			Process p = null;
-
-			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserOpera, "-newprivatetab " + url );
-			psInfo.CreateNoWindow = false;
-			psInfo.UseShellExecute = false;
-			psInfo.WindowStyle = ProcessWindowStyle.Normal;
-			try { p = Process.Start( psInfo ); }
-			catch (Exception) { }
-			if (p != null) Browser.Add( p );
-			if (Browser.Count < BrowserCount) Thread.Sleep( NextTime );
-			else
-			{
-				Thread.Sleep( StayTime );
-				CloseBrowsers_Opera();
-			}
-			return 0;
-		}
-
-		// close all running browsers
-		private int CloseBrowsers_Chrome ()
+		private int CloseBrowsers ()
 		{
 			int i;
 
-			Process[] p = Process.GetProcessesByName( "chrome" );
+			if (Browser == hkBrowser.None) return -1;
+			Process[] p = Process.GetProcessesByName( BrowserName[(int) Browser] );
 			for (i = 0 ; i < p.Length ; i++)
 			{
 				p[i].Kill();
 			}
-			Browser.RemoveAll( browser => true );
+			BrowserProc.RemoveAll( browser => true );
 			return 0;
 		}
 
-		// access a particular url for a duration using chrome
-		private int AccessURL_Chrome (string url)
+		// access a particular url for a duration using browser
+		private int AccessURL (string url)
 		{
 			Process p = null;
-			
-			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserChrome, "--new-window " + url );
+
+			if (Browser == hkBrowser.None) return -1;
+			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserPath[(int) Browser], BrowserParam[(int) Browser] + url );
 			psInfo.CreateNoWindow = false;
 			psInfo.UseShellExecute = false;
-			psInfo.WindowStyle = ProcessWindowStyle.Normal;
+			psInfo.WindowStyle = ProcessWindowStyle.Hidden;
 			try { p = Process.Start( psInfo ); }
 			catch (Exception) { }
-			if (p != null) Browser.Add( p );
-			if (Browser.Count < BrowserCount) Thread.Sleep( NextTime );
+			if (p != null) BrowserProc.Add( p );
+			if (BrowserProc.Count < BrowserCount) Thread.Sleep( NextTime );
 			else
 			{
 				Thread.Sleep( StayTime );
-				CloseBrowsers_Chrome();
+				CloseBrowsers();
 			}
 			return 0;
 		}
 
-		// access a particular url for a duration using webbrowser
-		private int AccessURL_WebBrowser (string url)
-		{
-			if (Browser.Count == 0) return -1;
-			// Browser[0].ScriptErrorsSuppressed = true;
-			// Browser[0].Navigate( url );
-			Thread.Sleep( StayTime );
-			return 0;
-		}
-
-		// access an url using webrequest
-		private int AccessURL_WebRequest (string web_page)
-		{
-			WebRequest wrq = WebRequest.Create( web_page );
-			WebResponse wrs = wrq.GetResponse();
-			Stream rcv = wrs.GetResponseStream();
-			Encoding encd = System.Text.Encoding.GetEncoding( "utf-8" );
-			StreamReader rdStrm = new StreamReader( rcv, encd );
-			string sResp = rdStrm.ReadToEnd();
-			rdStrm.Close();
-			wrs.Close();
-			return 0;
-		}
-
 		// upon start, start thread
-		private void fStart_Click (object sender, EventArgs e)
+		private void fStartExec_Click (object sender, EventArgs e)
 		{
-			// start progress bar
-			fProgress.Value = 0;
 			StartExec();
 		}
 
 		// upon stop, stop thread
-		private void fStop_Click (object sender, EventArgs e)
+		private void fStopExec_Click (object sender, EventArgs e)
 		{
-			//stop run thread
 			StopExec();
+		}
+
+		// upon pause, stop thread, upon resume, start thread
+		private void fPauseExec_Click (object sender, EventArgs e)
+		{
+			ExecPaused = !ExecPaused;
+			if (ExecPaused) fPauseExec.Text = "Resume";
+			else fPauseExec.Text = "Pause";
 		}
 
 		// updates the list url
@@ -227,7 +209,7 @@ namespace WebTraffic
 			{
 				str += ListURL[i] + "\r\n";
 			}
-			fListURL.Text = str;
+			if(fListURL.Text != str) fListURL.Text = str;
 		}
 
 		// update progress bar
@@ -240,36 +222,70 @@ namespace WebTraffic
 			else
 			{
 				// update progress bar
-				fProgress.Minimum = Access.Start;
-				fProgress.Maximum = Access.Stop;
-				fProgress.Value = Access.Current;
+				if (fProgress.Minimum != Round.Start) fProgress.Minimum = Round.Start;
+				if (fProgress.Maximum != Round.Stop) fProgress.Maximum = Round.Stop;
+				if (fProgress.Value != Round.Current) fProgress.Value = Round.Current;
 			}
 		}
 
-		// paint window
-		private void WebTraffic_Paint (object sender, PaintEventArgs e)
+		// hide pause button
+		public void RefreshExec ()
 		{
-			UpdateProgress();
+			if (this.InvokeRequired)
+			{
+				this.Invoke( new MethodInvoker( RefreshExec ) );
+			}
+			else
+			{
+				fPauseExec.Text = "Pause";
+				fPauseExec.Enabled = false;
+				fStartExec.Enabled = true;
+			}
 		}
 
 		// add url to list
-		private void fAdd_Click (object sender, EventArgs e)
+		private void fAddListURL_Click (object sender, EventArgs e)
 		{
-			ListURL.Add( fURL.Text );
-			UpdateListURL();
+			if (fURL.Text.Length > 0)
+			{
+				ListURL.Add( fURL.Text );
+				UpdateListURL();
+			}
 		}
 
 		// remove url from list
-		private void fRemove_Click (object sender, EventArgs e)
+		private void fRemoveListURL_Click (object sender, EventArgs e)
 		{
-			ListURL.Remove( fURL.Text );
+			if (fURL.Text.Length > 0)
+			{
+				ListURL.Remove( fURL.Text );
+				UpdateListURL();
+			}
+		}
+
+		// load url list from a text file
+		private void fLoadListURL_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgLoadListURL.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			string[] list = File.ReadAllLines( dlgLoadListURL.FileName );
+			ListURL.RemoveAll( url => true );
+			ListURL.AddRange( list );
 			UpdateListURL();
+		}
+
+		// save url list to a text file
+		private void fSaveListURL_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgSaveListURL.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			File.WriteAllLines( dlgSaveListURL.FileName, ListURL );
 		}
 
 		// update access rounds upon focus change
 		private void fRounds_Leave (object sender, EventArgs e)
 		{
-			int.TryParse( fRounds.Text, out Access.Stop );
+			int.TryParse( fRounds.Text, out Round.Stop );
 			UpdateProgress();
 		}
 
@@ -297,6 +313,98 @@ namespace WebTraffic
 		private void fBrowserCount_Leave (object sender, EventArgs e)
 		{
 			int.TryParse( fBrowserCount.Text, out BrowserCount );
+		}
+
+		// internal minimize button
+		private void fWinMinimize_Click (object sender, EventArgs e)
+		{
+			Window.SendToBack();
+		}
+
+		// internal close button
+		private void fWinClose_Click (object sender, EventArgs e)
+		{
+			Window.Close();
+		}
+
+		// select path for chrome browser
+		private void fBrowserPath_Chrome_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgSelectBrowser.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			BrowserPath[(int) hkBrowser.Chrome] = dlgSelectBrowser.FileName;
+			File.WriteAllLines( SettingsFile, BrowserPath );
+		}
+
+		// select path for opera browser
+		private void fBrowserPath_Opera_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgSelectBrowser.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			BrowserPath[(int) hkBrowser.Opera] = dlgSelectBrowser.FileName;
+			File.WriteAllLines( SettingsFile, BrowserPath );
+		}
+
+		// select path for firefox browser
+		private void fBrowserPath_Firefox_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgSelectBrowser.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			BrowserPath[(int) hkBrowser.Firefox] = dlgSelectBrowser.FileName;
+			File.WriteAllLines( SettingsFile, BrowserPath );
+		}
+
+		// select path for ie browser
+		private void fBrowserPath_IE_Click (object sender, EventArgs e)
+		{
+			DialogResult dRslt = dlgSelectBrowser.ShowDialog();
+			if (dRslt != System.Windows.Forms.DialogResult.OK) return;
+			BrowserPath[(int) hkBrowser.IE] = dlgSelectBrowser.FileName;
+			File.WriteAllLines( SettingsFile, BrowserPath );
+		}
+
+		// select chrome browser (if path available)
+		private void fBrowserSelect_Chrome_Click (object sender, EventArgs e)
+		{
+			if (BrowserPath[(int) hkBrowser.Chrome] == "") return;
+			Browser = hkBrowser.Chrome;
+			fBrowserSelect_Chrome.BackColor = Color.DimGray;
+			fBrowserSelect_Opera.BackColor = Color.White;
+			fBrowserSelect_Firefox.BackColor = Color.White;
+			fBrowserSelect_IE.BackColor = Color.White;
+		}
+
+		// select opera browser (if path available)
+		private void fBrowserSelect_Opera_Click (object sender, EventArgs e)
+		{
+			if (BrowserPath[(int) hkBrowser.Opera] == "") return;
+			Browser = hkBrowser.Opera;
+			fBrowserSelect_Opera.BackColor = Color.DimGray;
+			fBrowserSelect_Chrome.BackColor = Color.White;
+			fBrowserSelect_Firefox.BackColor = Color.White;
+			fBrowserSelect_IE.BackColor = Color.White;
+		}
+
+		// select firefox browser (if path available)
+		private void fBrowserSelect_Firefox_Click (object sender, EventArgs e)
+		{
+			if (BrowserPath[(int) hkBrowser.Firefox] == "") return;
+			Browser = hkBrowser.Firefox;
+			fBrowserSelect_Firefox.BackColor = Color.DimGray;
+			fBrowserSelect_Chrome.BackColor = Color.White;
+			fBrowserSelect_Opera.BackColor = Color.White;
+			fBrowserSelect_IE.BackColor = Color.White;
+		}
+
+		// select ie browser (if path available)
+		private void fBrowserSelect_IE_Click (object sender, EventArgs e)
+		{
+			if (BrowserPath[(int) hkBrowser.IE] == "") return;
+			Browser = hkBrowser.IE;
+			fBrowserSelect_IE.BackColor = Color.DimGray;
+			fBrowserSelect_Chrome.BackColor = Color.White;
+			fBrowserSelect_Opera.BackColor = Color.White;
+			fBrowserSelect_Firefox.BackColor = Color.White;
 		}
 	}
 }
