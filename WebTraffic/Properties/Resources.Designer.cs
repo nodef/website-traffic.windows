@@ -67,6 +67,13 @@ namespace WebTraffic.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Chrome_small {
+            get {
+                object obj = ResourceManager.GetObject("Chrome_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap close {
             get {
                 object obj = ResourceManager.GetObject("close", resourceCulture);
@@ -81,6 +88,13 @@ namespace WebTraffic.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Firefox_icon_small {
+            get {
+                object obj = ResourceManager.GetObject("Firefox-icon_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Icon_Browser_Opera {
             get {
                 object obj = ResourceManager.GetObject("Icon_Browser_Opera", resourceCulture);
@@ -88,9 +102,23 @@ namespace WebTraffic.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Icon_Browser_Opera_small {
+            get {
+                object obj = ResourceManager.GetObject("Icon-Browser-Opera_small", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Internet_Explorer_7_Logo {
             get {
                 object obj = ResourceManager.GetObject("Internet_Explorer_7_Logo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Internet_Explorer_7_Logo_small {
+            get {
+                object obj = ResourceManager.GetObject("Internet_Explorer_7_Logo_small", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -10,7 +10,6 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 namespace WebTraffic
 {
@@ -19,6 +18,11 @@ namespace WebTraffic
 		public int	Start;
 		public int	Current;
 		public int	Stop;
+	};
+	public struct hkMouseStatus
+	{
+		public bool		Pressed;
+		public Point	LastPosition;
 	};
 	public enum hkBrowser:int
 	{
@@ -42,14 +46,7 @@ namespace WebTraffic
 		hkBrowser		Browser;
 		string			SettingsFile;
 		bool			ExecPaused;
-
-		// import windows functions
-		/*
-		[DllImport( "user32.dll" )]
-		private extern static bool SetWindowPos (IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
-		[DllImport( "user32.dll" )]
-		private extern static bool GetWindowRect (IntPtr hWnd, out Point lpRect);
-		*/
+		hkMouseStatus	MouseStatus;
 
 		// create new form instance
 		public WebTraffic ()
@@ -84,6 +81,8 @@ namespace WebTraffic
 			}
 			ExecPaused = false;
 			fPauseExec.Enabled = false;
+			MouseStatus.Pressed = false;
+			MouseStatus.LastPosition = MousePosition;
 		}
 
 		// start thread execution
@@ -178,31 +177,6 @@ namespace WebTraffic
 			return 0;
 		}
 
-		/*
-		// hide all running browsers
-		private int HideBrowsers ()
-		{
-			int i;
-			Point winSize;
-			Process[] p;
-
-			if (Browser == hkBrowser.None) return -1;
-			// hide all browser processes (through repeated trying)
-			p = Process.GetProcessesByName( BrowserName[(int) Browser] );
-			for (i = 0 ; i < p.Length ; i++)
-			{
-				do
-				{
-					GetWindowRect( p[i].MainWindowHandle, out winSize );
-					if (winSize.X <= 0) Thread.Sleep( 50 );
-					else break;
-				} while (true);
-				SetWindowPos( p[i].MainWindowHandle, (IntPtr) 1, 0, 0, 0, 0, 0x0080 );
-			}
-			return 0;
-		}
-		*/
-
 		// access a particular url for a duration using browser
 		private int AccessURL (string url)
 		{
@@ -214,11 +188,7 @@ namespace WebTraffic
 			p.StartInfo.CreateNoWindow = true;
 			p.StartInfo.UseShellExecute = false;
 			p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			try
-			{
-				p.Start();
-				// HideBrowsers();
-			}
+			try { p.Start(); }
 			catch (Exception) { }
 			if (p != null) BrowserProc.Add( p );
 			if (BrowserProc.Count < BrowserCount) Thread.Sleep( NextTime );
@@ -452,6 +422,30 @@ namespace WebTraffic
 			fBrowserSelect_Chrome.BackColor = Color.White;
 			fBrowserSelect_Opera.BackColor = Color.White;
 			fBrowserSelect_Firefox.BackColor = Color.White;
+		}
+
+		// updates mouse status to pressed
+		private void WebTraffic_MouseDown (object sender, MouseEventArgs e)
+		{
+			MouseStatus.Pressed = true;
+			MouseStatus.LastPosition = MousePosition;
+		}
+
+		// updates mouse status to left
+		private void WebTraffic_MouseUp (object sender, MouseEventArgs e)
+		{
+			MouseStatus.Pressed = false;
+		}
+
+		// moves the window
+		private void WebTraffic_MouseMove (object sender, MouseEventArgs e)
+		{
+			if (MouseStatus.Pressed)
+			{
+				Top += ( MousePosition.Y - MouseStatus.LastPosition.Y );
+				Left += ( MousePosition.X - MouseStatus.LastPosition.X );
+			}
+			MouseStatus.LastPosition = MousePosition;
 		}
 	}
 }

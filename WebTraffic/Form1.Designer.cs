@@ -55,16 +55,16 @@
 			this.fBrowserSelect_IE = new System.Windows.Forms.Button();
 			this.fPauseExec = new System.Windows.Forms.Button();
 			this.fStopExec = new System.Windows.Forms.Button();
+			this.dlgLoadListURL = new System.Windows.Forms.OpenFileDialog();
+			this.dlgSaveListURL = new System.Windows.Forms.SaveFileDialog();
+			this.dlgSelectBrowser = new System.Windows.Forms.OpenFileDialog();
+			this.fWinMinimize = new System.Windows.Forms.Button();
+			this.fWinClose = new System.Windows.Forms.Button();
 			this.fBrowserPath_IE = new System.Windows.Forms.Button();
 			this.fBrowserPath_Firefox = new System.Windows.Forms.Button();
 			this.fBrowserPath_Opera = new System.Windows.Forms.Button();
 			this.fBrowserPath_Chrome = new System.Windows.Forms.Button();
 			this.dWinLogo = new System.Windows.Forms.PictureBox();
-			this.fWinClose = new System.Windows.Forms.Button();
-			this.fWinMinimize = new System.Windows.Forms.Button();
-			this.dlgLoadListURL = new System.Windows.Forms.OpenFileDialog();
-			this.dlgSaveListURL = new System.Windows.Forms.SaveFileDialog();
-			this.dlgSelectBrowser = new System.Windows.Forms.OpenFileDialog();
 			( (System.ComponentModel.ISupportInitialize) ( this.dWinLogo ) ).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -345,10 +345,54 @@
 			this.fStopExec.UseVisualStyleBackColor = false;
 			this.fStopExec.Click += new System.EventHandler( this.fStopExec_Click );
 			// 
+			// dlgLoadListURL
+			// 
+			this.dlgLoadListURL.DefaultExt = "txt";
+			this.dlgLoadListURL.Filter = "URL List files|*.txt";
+			this.dlgLoadListURL.Title = "Load URL List";
+			// 
+			// dlgSaveListURL
+			// 
+			this.dlgSaveListURL.DefaultExt = "txt";
+			this.dlgSaveListURL.Filter = "URL List files|*.txt";
+			this.dlgSaveListURL.Title = "Save URL List";
+			// 
+			// dlgSelectBrowser
+			// 
+			this.dlgSelectBrowser.DefaultExt = "exe";
+			this.dlgSelectBrowser.Filter = "Browser Executables|*.exe";
+			this.dlgSelectBrowser.Title = "Select Browser";
+			// 
+			// fWinMinimize
+			// 
+			this.fWinMinimize.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.fWinMinimize.BackgroundImage = global::WebTraffic.Properties.Resources.minimize_btn;
+			this.fWinMinimize.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.fWinMinimize.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
+			this.fWinMinimize.Location = new System.Drawing.Point( 895, 0 );
+			this.fWinMinimize.Name = "fWinMinimize";
+			this.fWinMinimize.Size = new System.Drawing.Size( 25, 25 );
+			this.fWinMinimize.TabIndex = 49;
+			this.fWinMinimize.UseVisualStyleBackColor = false;
+			this.fWinMinimize.Click += new System.EventHandler( this.fWinMinimize_Click );
+			// 
+			// fWinClose
+			// 
+			this.fWinClose.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.fWinClose.BackgroundImage = global::WebTraffic.Properties.Resources.close;
+			this.fWinClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+			this.fWinClose.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
+			this.fWinClose.Location = new System.Drawing.Point( 926, 0 );
+			this.fWinClose.Name = "fWinClose";
+			this.fWinClose.Size = new System.Drawing.Size( 25, 25 );
+			this.fWinClose.TabIndex = 48;
+			this.fWinClose.UseVisualStyleBackColor = false;
+			this.fWinClose.Click += new System.EventHandler( this.fWinClose_Click );
+			// 
 			// fBrowserPath_IE
 			// 
 			this.fBrowserPath_IE.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_IE.BackgroundImage = global::WebTraffic.Properties.Resources.Internet_Explorer_7_Logo;
+			this.fBrowserPath_IE.BackgroundImage = global::WebTraffic.Properties.Resources.Internet_Explorer_7_Logo_small;
 			this.fBrowserPath_IE.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_IE.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_IE.Location = new System.Drawing.Point( 343, 300 );
@@ -361,7 +405,7 @@
 			// fBrowserPath_Firefox
 			// 
 			this.fBrowserPath_Firefox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Firefox.BackgroundImage = global::WebTraffic.Properties.Resources.Firefox_icon;
+			this.fBrowserPath_Firefox.BackgroundImage = global::WebTraffic.Properties.Resources.Firefox_icon_small;
 			this.fBrowserPath_Firefox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Firefox.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Firefox.Location = new System.Drawing.Point( 343, 248 );
@@ -374,7 +418,7 @@
 			// fBrowserPath_Opera
 			// 
 			this.fBrowserPath_Opera.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Opera.BackgroundImage = global::WebTraffic.Properties.Resources.Icon_Browser_Opera;
+			this.fBrowserPath_Opera.BackgroundImage = global::WebTraffic.Properties.Resources.Icon_Browser_Opera_small;
 			this.fBrowserPath_Opera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Opera.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Opera.Location = new System.Drawing.Point( 343, 196 );
@@ -387,7 +431,7 @@
 			// fBrowserPath_Chrome
 			// 
 			this.fBrowserPath_Chrome.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Chrome.BackgroundImage = global::WebTraffic.Properties.Resources.Chrome;
+			this.fBrowserPath_Chrome.BackgroundImage = global::WebTraffic.Properties.Resources.Chrome_small;
 			this.fBrowserPath_Chrome.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Chrome.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Chrome.Location = new System.Drawing.Point( 343, 144 );
@@ -406,50 +450,6 @@
 			this.dWinLogo.Size = new System.Drawing.Size( 77, 74 );
 			this.dWinLogo.TabIndex = 25;
 			this.dWinLogo.TabStop = false;
-			// 
-			// fWinClose
-			// 
-			this.fWinClose.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fWinClose.BackgroundImage = global::WebTraffic.Properties.Resources.close;
-			this.fWinClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.fWinClose.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.fWinClose.Location = new System.Drawing.Point( 926, 0 );
-			this.fWinClose.Name = "fWinClose";
-			this.fWinClose.Size = new System.Drawing.Size( 25, 25 );
-			this.fWinClose.TabIndex = 48;
-			this.fWinClose.UseVisualStyleBackColor = false;
-			this.fWinClose.Click += new System.EventHandler( this.fWinClose_Click );
-			// 
-			// fWinMinimize
-			// 
-			this.fWinMinimize.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fWinMinimize.BackgroundImage = global::WebTraffic.Properties.Resources.minimize_btn;
-			this.fWinMinimize.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-			this.fWinMinimize.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.fWinMinimize.Location = new System.Drawing.Point( 895, 0 );
-			this.fWinMinimize.Name = "fWinMinimize";
-			this.fWinMinimize.Size = new System.Drawing.Size( 25, 25 );
-			this.fWinMinimize.TabIndex = 49;
-			this.fWinMinimize.UseVisualStyleBackColor = false;
-			this.fWinMinimize.Click += new System.EventHandler( this.fWinMinimize_Click );
-			// 
-			// dlgLoadListURL
-			// 
-			this.dlgLoadListURL.DefaultExt = "txt";
-			this.dlgLoadListURL.Filter = "URL List files|*.txt";
-			this.dlgLoadListURL.Title = "Load URL List";
-			// 
-			// dlgSaveListURL
-			// 
-			this.dlgSaveListURL.DefaultExt = "txt";
-			this.dlgSaveListURL.Filter = "URL List files|*.txt";
-			this.dlgSaveListURL.Title = "Save URL List";
-			// 
-			// dlgSelectBrowser
-			// 
-			this.dlgSelectBrowser.DefaultExt = "exe";
-			this.dlgSelectBrowser.Filter = "Browser Executables|*.exe";
-			this.dlgSelectBrowser.Title = "Select Browser";
 			// 
 			// WebTraffic
 			// 
@@ -490,12 +490,16 @@
 			this.Controls.Add( this.fStartExec );
 			this.Controls.Add( this.dListURL );
 			this.Controls.Add( this.fURL );
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Icon = ( (System.Drawing.Icon) ( resources.GetObject( "$this.Icon" ) ) );
 			this.MaximizeBox = false;
 			this.Name = "WebTraffic";
+			this.Opacity = 0.95D;
 			this.Text = "WebTraffic";
 			this.TransparencyKey = System.Drawing.Color.Navy;
+			this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.WebTraffic_MouseDown );
+			this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.WebTraffic_MouseMove );
+			this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.WebTraffic_MouseUp );
 			( (System.ComponentModel.ISupportInitialize) ( this.dWinLogo ) ).EndInit();
 			this.ResumeLayout( false );
 			this.PerformLayout();
