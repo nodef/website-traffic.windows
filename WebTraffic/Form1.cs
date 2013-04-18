@@ -10,6 +10,7 @@ using System.Net;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace WebTraffic
 {
@@ -28,6 +29,7 @@ namespace WebTraffic
 		IE = 3
 	};
 
+
 	public partial class WebTraffic : Form
 	{
 		WebTraffic		Window;
@@ -40,6 +42,14 @@ namespace WebTraffic
 		hkBrowser		Browser;
 		string			SettingsFile;
 		bool			ExecPaused;
+
+		// import windows functions
+		/*
+		[DllImport( "user32.dll" )]
+		private extern static bool SetWindowPos (IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, int uFlags);
+		[DllImport( "user32.dll" )]
+		private extern static bool GetWindowRect (IntPtr hWnd, out Point lpRect);
+		*/
 
 		// create new form instance
 		public WebTraffic ()
@@ -146,29 +156,69 @@ namespace WebTraffic
 		private int CloseBrowsers (bool quick_close)
 		{
 			int i;
+			Process[] p;
 
 			if (Browser == hkBrowser.None) return -1;
 			if(!quick_close) Thread.Sleep( StayTime );
-			Process[] p = Process.GetProcessesByName( BrowserName[(int) Browser] );
-			for (i = 0 ; i < p.Length ; i++)
+			// close all browser processes normally (through repeated trying)
+			while (( p = Process.GetProcessesByName( BrowserName[(int) Browser] ) ).Length > 0)
 			{
-				p[i].Kill();
+				for (i = 0 ; i < p.Length ; i++)
+				{
+					p[i].CloseMainWindow();
+					p[i].Dispose();
+				}
+			}
+			// free browser process resources
+			for (i = 0 ; i < BrowserProc.Count ; i++)
+			{
+				BrowserProc[i].Dispose();
 			}
 			BrowserProc.RemoveAll( browser => true );
 			return 0;
 		}
 
+		/*
+		// hide all running browsers
+		private int HideBrowsers ()
+		{
+			int i;
+			Point winSize;
+			Process[] p;
+
+			if (Browser == hkBrowser.None) return -1;
+			// hide all browser processes (through repeated trying)
+			p = Process.GetProcessesByName( BrowserName[(int) Browser] );
+			for (i = 0 ; i < p.Length ; i++)
+			{
+				do
+				{
+					GetWindowRect( p[i].MainWindowHandle, out winSize );
+					if (winSize.X <= 0) Thread.Sleep( 50 );
+					else break;
+				} while (true);
+				SetWindowPos( p[i].MainWindowHandle, (IntPtr) 1, 0, 0, 0, 0, 0x0080 );
+			}
+			return 0;
+		}
+		*/
+
 		// access a particular url for a duration using browser
 		private int AccessURL (string url)
 		{
-			Process p = null;
+			Process p = new Process();
 
 			if (Browser == hkBrowser.None) return -1;
-			ProcessStartInfo psInfo = new ProcessStartInfo( BrowserPath[(int) Browser], BrowserParam[(int) Browser] + url );
-			psInfo.CreateNoWindow = false;
-			psInfo.UseShellExecute = false;
-			psInfo.WindowStyle = ProcessWindowStyle.Hidden;
-			try { p = Process.Start( psInfo ); }
+			p.StartInfo.FileName = BrowserPath[(int) Browser];
+			p.StartInfo.Arguments = BrowserParam[(int) Browser] + url;
+			p.StartInfo.CreateNoWindow = true;
+			p.StartInfo.UseShellExecute = false;
+			p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			try
+			{
+				p.Start();
+				// HideBrowsers();
+			}
 			catch (Exception) { }
 			if (p != null) BrowserProc.Add( p );
 			if (BrowserProc.Count < BrowserCount) Thread.Sleep( NextTime );
