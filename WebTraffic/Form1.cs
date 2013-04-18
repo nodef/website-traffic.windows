@@ -97,7 +97,7 @@ namespace WebTraffic
 			// start exec thread
 			if (thExec == null || thExec.ThreadState == System.Threading.ThreadState.Stopped)
 			{
-				CloseBrowsers();
+				CloseBrowsers(true);
 				thExec = new Thread( () => Exec( ListURL ) );
 				thExec.Name = "WebTraffic_Exec";
 				thExec.IsBackground = true;
@@ -114,7 +114,7 @@ namespace WebTraffic
 			if (thExec == null) return -1;
 			thExec.Abort();
 			thExec = null;
-			CloseBrowsers();
+			CloseBrowsers(true);
 			fPauseExec.Enabled = false;
 			fStartExec.Enabled = true;
 			return 0;
@@ -138,16 +138,17 @@ namespace WebTraffic
 					UpdateProgress();
 				}
 			}
-			CloseBrowsers();
+			CloseBrowsers(false);
 			RefreshExec();
 		}
 
 		// close all running browsers
-		private int CloseBrowsers ()
+		private int CloseBrowsers (bool quick_close)
 		{
 			int i;
 
 			if (Browser == hkBrowser.None) return -1;
+			if(!quick_close) Thread.Sleep( StayTime );
 			Process[] p = Process.GetProcessesByName( BrowserName[(int) Browser] );
 			for (i = 0 ; i < p.Length ; i++)
 			{
@@ -171,11 +172,7 @@ namespace WebTraffic
 			catch (Exception) { }
 			if (p != null) BrowserProc.Add( p );
 			if (BrowserProc.Count < BrowserCount) Thread.Sleep( NextTime );
-			else
-			{
-				Thread.Sleep( StayTime );
-				CloseBrowsers();
-			}
+			else CloseBrowsers(false);
 			return 0;
 		}
 
