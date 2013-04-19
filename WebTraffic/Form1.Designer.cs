@@ -65,6 +65,7 @@
 			this.fBrowserPath_Opera = new System.Windows.Forms.Button();
 			this.fBrowserPath_Chrome = new System.Windows.Forms.Button();
 			this.dWinLogo = new System.Windows.Forms.PictureBox();
+			this.fBrowserForceClose = new System.Windows.Forms.CheckBox();
 			( (System.ComponentModel.ISupportInitialize) ( this.dWinLogo ) ).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -75,6 +76,7 @@
 			this.fURL.Name = "fURL";
 			this.fURL.Size = new System.Drawing.Size( 492, 21 );
 			this.fURL.TabIndex = 0;
+			this.fURL.KeyPress += new System.Windows.Forms.KeyPressEventHandler( this.fURL_KeyPress );
 			// 
 			// dListURL
 			// 
@@ -113,7 +115,7 @@
 			this.fRounds.Name = "fRounds";
 			this.fRounds.Size = new System.Drawing.Size( 161, 21 );
 			this.fRounds.TabIndex = 12;
-			this.fRounds.Text = "20";
+			this.fRounds.Text = "128";
 			this.fRounds.Leave += new System.EventHandler( this.fRounds_Leave );
 			// 
 			// dRounds
@@ -140,17 +142,17 @@
 			// fStayTime
 			// 
 			this.fStayTime.Font = new System.Drawing.Font( "Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.fStayTime.Location = new System.Drawing.Point( 116, 211 );
+			this.fStayTime.Location = new System.Drawing.Point( 116, 196 );
 			this.fStayTime.Name = "fStayTime";
 			this.fStayTime.Size = new System.Drawing.Size( 161, 21 );
 			this.fStayTime.TabIndex = 16;
-			this.fStayTime.Text = "4";
+			this.fStayTime.Text = "32";
 			this.fStayTime.Leave += new System.EventHandler( this.fStayTime_Leave );
 			// 
 			// fBrowserCount
 			// 
 			this.fBrowserCount.Font = new System.Drawing.Font( "Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.fBrowserCount.Location = new System.Drawing.Point( 116, 315 );
+			this.fBrowserCount.Location = new System.Drawing.Point( 116, 275 );
 			this.fBrowserCount.Name = "fBrowserCount";
 			this.fBrowserCount.Size = new System.Drawing.Size( 161, 21 );
 			this.fBrowserCount.TabIndex = 18;
@@ -160,7 +162,7 @@
 			// fNextTime
 			// 
 			this.fNextTime.Font = new System.Drawing.Font( "Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.fNextTime.Location = new System.Drawing.Point( 116, 263 );
+			this.fNextTime.Location = new System.Drawing.Point( 116, 235 );
 			this.fNextTime.Name = "fNextTime";
 			this.fNextTime.Size = new System.Drawing.Size( 161, 21 );
 			this.fNextTime.TabIndex = 20;
@@ -239,7 +241,7 @@
 			// 
 			this.dStayTime.AutoSize = true;
 			this.dStayTime.Font = new System.Drawing.Font( "Trebuchet MS", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.dStayTime.Location = new System.Drawing.Point( 12, 211 );
+			this.dStayTime.Location = new System.Drawing.Point( 12, 196 );
 			this.dStayTime.Name = "dStayTime";
 			this.dStayTime.Size = new System.Drawing.Size( 71, 18 );
 			this.dStayTime.TabIndex = 34;
@@ -249,7 +251,7 @@
 			// 
 			this.dNextTime.AutoSize = true;
 			this.dNextTime.Font = new System.Drawing.Font( "Trebuchet MS", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.dNextTime.Location = new System.Drawing.Point( 12, 263 );
+			this.dNextTime.Location = new System.Drawing.Point( 12, 235 );
 			this.dNextTime.Name = "dNextTime";
 			this.dNextTime.Size = new System.Drawing.Size( 74, 18 );
 			this.dNextTime.TabIndex = 35;
@@ -259,7 +261,7 @@
 			// 
 			this.dBrowserCount.AutoSize = true;
 			this.dBrowserCount.Font = new System.Drawing.Font( "Trebuchet MS", 9.75F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
-			this.dBrowserCount.Location = new System.Drawing.Point( 12, 315 );
+			this.dBrowserCount.Location = new System.Drawing.Point( 12, 275 );
 			this.dBrowserCount.Name = "dBrowserCount";
 			this.dBrowserCount.Size = new System.Drawing.Size( 98, 18 );
 			this.dBrowserCount.TabIndex = 36;
@@ -451,12 +453,25 @@
 			this.dWinLogo.TabIndex = 25;
 			this.dWinLogo.TabStop = false;
 			// 
+			// fBrowserForceClose
+			// 
+			this.fBrowserForceClose.AutoSize = true;
+			this.fBrowserForceClose.Font = new System.Drawing.Font( "Trebuchet MS", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
+			this.fBrowserForceClose.Location = new System.Drawing.Point( 15, 316 );
+			this.fBrowserForceClose.Name = "fBrowserForceClose";
+			this.fBrowserForceClose.Size = new System.Drawing.Size( 204, 22 );
+			this.fBrowserForceClose.TabIndex = 50;
+			this.fBrowserForceClose.Text = "Forcibly close browser windows";
+			this.fBrowserForceClose.UseVisualStyleBackColor = true;
+			this.fBrowserForceClose.CheckedChanged += new System.EventHandler( this.fBrowserForceClose_CheckedChanged );
+			// 
 			// WebTraffic
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 13F );
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size( 952, 480 );
+			this.Controls.Add( this.fBrowserForceClose );
 			this.Controls.Add( this.fWinMinimize );
 			this.Controls.Add( this.fWinClose );
 			this.Controls.Add( this.fStopExec );
@@ -544,6 +559,7 @@
 		private System.Windows.Forms.OpenFileDialog dlgLoadListURL;
 		private System.Windows.Forms.SaveFileDialog dlgSaveListURL;
 		private System.Windows.Forms.OpenFileDialog dlgSelectBrowser;
+		private System.Windows.Forms.CheckBox fBrowserForceClose;
 	}
 }
 

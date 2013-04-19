@@ -47,6 +47,7 @@ namespace WebTraffic
 		string			SettingsFile;
 		bool			ExecPaused;
 		hkMouseStatus	MouseStatus;
+		bool			BrowserForceClose;
 
 		// create new form instance
 		public WebTraffic ()
@@ -83,6 +84,7 @@ namespace WebTraffic
 			fPauseExec.Enabled = false;
 			MouseStatus.Pressed = false;
 			MouseStatus.LastPosition = MousePosition;
+			BrowserForceClose = fBrowserForceClose.Checked;
 		}
 
 		// start thread execution
@@ -159,13 +161,26 @@ namespace WebTraffic
 
 			if (Browser == hkBrowser.None) return -1;
 			if(!quick_close) Thread.Sleep( StayTime );
-			// close all browser processes normally (through repeated trying)
-			while (( p = Process.GetProcessesByName( BrowserName[(int) Browser] ) ).Length > 0)
+			// close all browser processes forcibly
+			if (BrowserForceClose)
 			{
+				p = Process.GetProcessesByName( BrowserName[(int) Browser] );
 				for (i = 0 ; i < p.Length ; i++)
 				{
-					p[i].CloseMainWindow();
+					p[i].Kill();
 					p[i].Dispose();
+				}
+			}
+			// close all browser processes normally (through repeated trying)
+			else
+			{
+				while (( p = Process.GetProcessesByName( BrowserName[(int) Browser] ) ).Length > 0)
+				{
+					for (i = 0 ; i < p.Length ; i++)
+					{
+						p[i].CloseMainWindow();
+						p[i].Dispose();
+					}
 				}
 			}
 			// free browser process resources
@@ -266,6 +281,7 @@ namespace WebTraffic
 			if (fURL.Text.Length > 0)
 			{
 				ListURL.Add( fURL.Text );
+				fURL.Text = "";
 				UpdateListURL();
 			}
 		}
@@ -335,7 +351,7 @@ namespace WebTraffic
 		// internal minimize button
 		private void fWinMinimize_Click (object sender, EventArgs e)
 		{
-			Window.SendToBack();
+			Window.WindowState = FormWindowState.Minimized;
 		}
 
 		// internal close button
@@ -446,6 +462,23 @@ namespace WebTraffic
 				Left += ( MousePosition.X - MouseStatus.LastPosition.X );
 			}
 			MouseStatus.LastPosition = MousePosition;
+		}
+
+		// select force close option or not
+		private void fBrowserForceClose_CheckedChanged (object sender, EventArgs e)
+		{
+			BrowserForceClose = fBrowserForceClose.Checked;
+		}
+
+		// if enter key is pressed, add to url list
+		private void fURL_KeyPress (object sender, KeyPressEventArgs e)
+		{
+			if (e.KeyChar == '\r' && fURL.Text.Length > 0)
+			{
+				ListURL.Add( fURL.Text );
+				fURL.Text = "";
+				UpdateListURL();
+			}
 		}
 	}
 }
