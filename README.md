@@ -11,17 +11,17 @@ do the same.
 
 <img src="/assets/img/0.png" width="70%"><br/>
 Open **cs-web-traffic**. Old settings are loaded automatically.
-<br/>
+<br/><br/>
 
 
 <img src="/assets/img/1.png" width="70%"><br/>
 `Select Browser` Path for Google Chrome (first time only).
-<br/>
+<br/><br/>
 
 
 <img src="/assets/img/2.png" width="70%"><br/>
 `Select Browser` Path for Internet Explorer (first time only).
-<br/>
+<br/><br/>
 
 
 <img src="/assets/img/3.png" width="70%"><br/>
