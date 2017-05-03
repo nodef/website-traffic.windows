@@ -1,16 +1,16 @@
-#cs-web-traffic
+# webtraffic
 
-**cs-web-traffic** is a windows app to generate traffic to one or multiple
+**webtraffic** is a windows app to generate traffic to one or multiple
 websites as a bot for selected duration. This is especially useful for
 increasing the views of a youtube video, or increase the page views of a
 webite. No pain of refreshing pages again and again, or paying someone to
 do the same.
 
 
-##demo
+## demo
 
 <img src="/assets/img/0.png" width="70%"><br/>
-Open **cs-web-traffic**. Old settings are loaded automatically.
+Open **webtraffic**. Old settings are loaded automatically.
 <br/><br/>
 
 
@@ -61,7 +61,7 @@ This way it can be loaded back later.
 
 
 <img src="/assets/img/9.png" width="70%"><br/>
-**cs-web-traffic** automatically opens up pages mentioned in the `URL List`.
+**webtraffic** automatically opens up pages mentioned in the `URL List`.
 <br/><br/>
 
 
