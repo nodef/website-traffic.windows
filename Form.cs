@@ -8,97 +8,103 @@ using System.Diagnostics;
 
 
 namespace WebTraffic {
-  public struct hkRound	{
+  public struct Round	{
     public int	Start;
-    public int	Current;
+    public int  Current;
     public int	Stop;
   };
-  public struct hkMouseStatus	{
-    public bool		Pressed;
-    public Point	LastPosition;
+
+  public struct MouseStatus	{
+    public bool   Pressed;
+    public Point  LastPosition;
   };
-  public enum hkBrowser:int	{
-    None = -1,
-    Chrome = 0,
-    Opera = 1,
+
+  public enum Browser : int	{
+    None    = -1,
+    Chrome  = 0,
+    Opera   = 1,
     Firefox = 2,
-    IE = 3
+    IE      = 3
   };
 
 
   public partial class WebTraffic : Form {
-    WebTraffic		Window;
-    hkRound				Round;
-    List<string>	ListURL;
-    Thread        thExec;
-    bool          ExecPaused;
-    hkBrowser     Browser;
-    List<Process>	BrowserProc;
-    string[]      BrowserParam, BrowserName, BrowserPath;
-    bool          BrowserForceClose;
-    int           StayTime, NextTime, BrowserCount;
-    string        SettingsFile;
-    hkMouseStatus	MouseStatus;
+    WebTraffic		window;
+    Thread        threadExec;
+    List<string>	listURL;
+    Round				round;
+    Browser     browser;
+    List<Process>	browserProc;
+    string[]      browserParam;
+    string[]      browserName;
+    string[]      browserPath;
+    bool          browserForceClose;
+    bool          execPaused;
+    int           stayTime;
+    int           nextTime;
+    int           browserCount;
+    string        settingsFile;
+    MouseStatus	mouseStatus;
 
     // create new form instance
     public WebTraffic () {
       string[] strTemp = new string[4];
 
       InitializeComponent();
-      Window = this;
-      BrowserProc = new List<Process>();
-      ListURL = new List<string>();
-      thExec = null;
-      BrowserParam = new string[4];
-      BrowserParam[(int) hkBrowser.Chrome] = "--new-window ";
-      BrowserParam[(int) hkBrowser.Opera] = "-newprivatetab ";
-      BrowserParam[(int) hkBrowser.Firefox] = "-private -new-tab ";
-      BrowserParam[(int) hkBrowser.IE] = "-private ";
-      BrowserName = new string[4];
-      BrowserName[(int) hkBrowser.Chrome] = "chrome";
-      BrowserName[(int) hkBrowser.Opera] = "opera";
-      BrowserName[(int) hkBrowser.Firefox] = "firefox";
-      BrowserName[(int) hkBrowser.IE] = "iexplore";
-      Browser = hkBrowser.None;
+      window = this;
+      browserProc = new List<Process>();
+      listURL = new List<string>();
+      threadExec = null;
+      browserParam = new string[4];
+      browserParam[(int) Browser.Chrome] = "--new-window ";
+      browserParam[(int) Browser.Opera] = "-newprivatetab ";
+      browserParam[(int) Browser.Firefox] = "-private -new-tab ";
+      browserParam[(int) Browser.IE] = "-private ";
+      browserName = new string[4];
+      browserName[(int) Browser.Chrome] = "chrome";
+      browserName[(int) Browser.Opera] = "opera";
+      browserName[(int) Browser.Firefox] = "firefox";
+      browserName[(int) Browser.IE] = "iexplore";
+      browser = Browser.None;
       // get browser path settings
-      SettingsFile = "settings.ini";
-      try { strTemp = File.ReadAllLines( SettingsFile ); }
+      settingsFile = "settings.ini";
+      try { strTemp = File.ReadAllLines( settingsFile ); }
       catch (Exception) { }
-      BrowserPath = new string[4];
+      browserPath = new string[4];
       for (int i=0 ; i < 4 ; i++) {
-        if (strTemp.Length > i && strTemp[i] != null) BrowserPath[i] = strTemp[i];
-        else BrowserPath[i] = "";
+        if (strTemp.Length > i && strTemp[i] != null) browserPath[i] = strTemp[i];
+        else browserPath[i] = "";
       }
-      ExecPaused = false;
-      fPauseExec.Enabled = false;
-      MouseStatus.Pressed = false;
-      MouseStatus.LastPosition = MousePosition;
-      BrowserForceClose = fBrowserForceClose.Checked;
+      execPaused = false;
+      fPause.Enabled = false;
+      mouseStatus.Pressed = false;
+      mouseStatus.LastPosition = MousePosition;
+      browserForceClose = fBrowserForceClose.Checked;
     }
 
     // start thread execution
     private int StartExec () {
-      if (Browser == hkBrowser.None) return -1;
+      if (browser == Browser.None) return -1;
       // update changing parameters
-      Round.Start = 0;
-      Round.Current = 0;
+      round.Start = 0;
+      round.Current = 0;
       try {
-        Round.Stop = int.Parse( fRounds.Text );
-        StayTime = (int) ( double.Parse( fStayTime.Text ) * 1000 );
-        NextTime = (int) ( double.Parse( fNextTime.Text ) * 1000 );
-        BrowserCount = int.Parse( fBrowserCount.Text );
+        round.Stop = int.Parse( fRounds.Text );
+        stayTime = (int) ( double.Parse( fStayTime.Text ) * 1000 );
+        nextTime = (int) ( double.Parse( fNextTime.Text ) * 1000 );
+        browserCount = int.Parse( fBrowserCount.Text );
       }
       catch (Exception) { }
       UpdateProgress();
-      fStartExec.Enabled = false;
-      fPauseExec.Enabled = true;
+      fStart.Enabled = false;
+      fPause.Enabled = true;
       // start exec thread
-      if (thExec == null || thExec.ThreadState == System.Threading.ThreadState.Stopped) {
+      if (threadExec == null || threadExec.ThreadState == System.Threading.ThreadState.Stopped) {
         CloseBrowsers(true);
-        thExec = new Thread( () => Exec( ListURL ) );
-        thExec.Name = "WebTraffic_Exec";
-        thExec.IsBackground = true;
-        thExec.Start();
+        threadExec = new Thread( () => Exec( listURL ) );
+        threadExec.Name = "WebTraffic_Exec";
+        threadExec.IsBackground = true;
+        threadExec.Start();
         return 0;
       }
       return -1;
@@ -107,12 +113,12 @@ namespace WebTraffic {
     // stop thread execution
     private int StopExec () {
       // stop exec thread
-      if (thExec == null) return -1;
-      thExec.Abort();
-      thExec = null;
+      if (threadExec == null) return -1;
+      threadExec.Abort();
+      threadExec = null;
       CloseBrowsers(true);
-      fPauseExec.Enabled = false;
-      fStartExec.Enabled = true;
+      fPause.Enabled = false;
+      fStart.Enabled = true;
       return 0;
     }
 
@@ -120,13 +126,13 @@ namespace WebTraffic {
     private void Exec (List<string> list_url) {
       int i, j;
 
-      while (Round.Current < Round.Stop) {
-        while (ExecPaused || list_url.Count == 0) { Thread.Sleep( 2000 ); }
-        for (i = 0, j = 0 ; i < ListURL.Count ; i++) {
-          j += ( AccessURL( ListURL[i] ) == 0 ) ? 1 : 0;
+      while (round.Current < round.Stop) {
+        while (execPaused || list_url.Count == 0) { Thread.Sleep( 2000 ); }
+        for (i = 0, j = 0 ; i < listURL.Count ; i++) {
+          j += ( AccessURL( listURL[i] ) == 0 ) ? 1 : 0;
         }
-        if (ListURL.Count > 0 && j == ListURL.Count) {
-          Round.Current++;
+        if (listURL.Count > 0 && j == listURL.Count) {
+          round.Current++;
           UpdateProgress();
         }
       }
@@ -139,36 +145,30 @@ namespace WebTraffic {
       int i;
       Process[] p;
 
-      if (Browser == hkBrowser.None) return -1;
-      if(!quick_close) Thread.Sleep( StayTime );
+      if (browser == Browser.None) return -1;
+      if(!quick_close) Thread.Sleep( stayTime );
       // close all browser processes forcibly
-      if (BrowserForceClose)
-      {
-        p = Process.GetProcessesByName( BrowserName[(int) Browser] );
-        for (i = 0 ; i < p.Length ; i++)
-        {
+      if (browserForceClose) {
+        p = Process.GetProcessesByName( browserName[(int) browser] );
+        for (i = 0 ; i < p.Length ; i++) {
           p[i].Kill();
           p[i].Dispose();
         }
       }
       // close all browser processes normally (through repeated trying)
-      else
-      {
-        while (( p = Process.GetProcessesByName( BrowserName[(int) Browser] ) ).Length > 0)
-        {
-          for (i = 0 ; i < p.Length ; i++)
-          {
+      else {
+        while (( p = Process.GetProcessesByName( browserName[(int) browser] ) ).Length > 0) {
+          for (i = 0 ; i < p.Length ; i++) {
             p[i].CloseMainWindow();
             p[i].Dispose();
           }
         }
       }
       // free browser process resources
-      for (i = 0 ; i < BrowserProc.Count ; i++)
-      {
-        BrowserProc[i].Dispose();
+      for (i = 0 ; i < browserProc.Count ; i++) {
+        browserProc[i].Dispose();
       }
-      BrowserProc.RemoveAll( browser => true );
+      browserProc.RemoveAll( browser => true );
       return 0;
     }
 
@@ -176,16 +176,16 @@ namespace WebTraffic {
     private int AccessURL (string url) {
       Process p = new Process();
 
-      if (Browser == hkBrowser.None) return -1;
-      p.StartInfo.FileName = BrowserPath[(int) Browser];
-      p.StartInfo.Arguments = BrowserParam[(int) Browser] + url;
+      if (browser == Browser.None) return -1;
+      p.StartInfo.FileName = browserPath[(int) browser];
+      p.StartInfo.Arguments = browserParam[(int) browser] + url;
       p.StartInfo.CreateNoWindow = true;
       p.StartInfo.UseShellExecute = false;
       p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
       try { p.Start(); }
       catch (Exception) { }
-      if (p != null) BrowserProc.Add( p );
-      if (BrowserProc.Count < BrowserCount) Thread.Sleep( NextTime );
+      if (p != null) browserProc.Add( p );
+      if (browserProc.Count < browserCount) Thread.Sleep( nextTime );
       else CloseBrowsers(false);
       return 0;
     }
@@ -202,9 +202,9 @@ namespace WebTraffic {
 
     // upon pause, stop thread, upon resume, start thread
     private void fPauseExec_Click (object sender, EventArgs e) {
-      ExecPaused = !ExecPaused;
-      if (ExecPaused) fPauseExec.Text = "Resume";
-      else fPauseExec.Text = "Pause";
+      execPaused = !execPaused;
+      if (execPaused) fPause.Text = "Resume";
+      else fPause.Text = "Pause";
     }
 
     // updates the list url
@@ -212,8 +212,8 @@ namespace WebTraffic {
       int i;
       string str = "";
 
-      for (i = 0 ; i < ListURL.Count ; i++) {
-        str += ListURL[i] + "\r\n";
+      for (i = 0 ; i < listURL.Count ; i++) {
+        str += listURL[i] + "\r\n";
       }
       if(fListURL.Text != str) fListURL.Text = str;
     }
@@ -225,9 +225,9 @@ namespace WebTraffic {
       }
       else {
         // update progress bar
-        if (fProgress.Minimum != Round.Start) fProgress.Minimum = Round.Start;
-        if (fProgress.Maximum != Round.Stop) fProgress.Maximum = Round.Stop;
-        if (fProgress.Value != Round.Current) fProgress.Value = Round.Current;
+        if (fProgress.Minimum != round.Start) fProgress.Minimum = round.Start;
+        if (fProgress.Maximum != round.Stop) fProgress.Maximum = round.Stop;
+        if (fProgress.Value != round.Current) fProgress.Value = round.Current;
       }
     }
 
@@ -237,9 +237,9 @@ namespace WebTraffic {
         this.Invoke( new MethodInvoker( RefreshExec ) );
       }
       else {
-        fPauseExec.Text = "Pause";
-        fPauseExec.Enabled = false;
-        fStartExec.Enabled = true;
+        fPause.Text = "Pause";
+        fPause.Enabled = false;
+        fStart.Enabled = true;
       }
     }
 
@@ -247,7 +247,7 @@ namespace WebTraffic {
     private void fAddListURL_Click (object sender, EventArgs e) {
       if (fURL.Text.Length > 0)
       {
-        ListURL.Add( fURL.Text );
+        listURL.Add( fURL.Text );
         fURL.Text = "";
         UpdateListURL();
       }
@@ -257,7 +257,7 @@ namespace WebTraffic {
     private void fRemoveListURL_Click (object sender, EventArgs e) {
       if (fURL.Text.Length > 0)
       {
-        ListURL.Remove( fURL.Text );
+        listURL.Remove( fURL.Text );
         UpdateListURL();
       }
     }
@@ -267,8 +267,8 @@ namespace WebTraffic {
       DialogResult dRslt = dlgLoadListURL.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
       string[] list = File.ReadAllLines( dlgLoadListURL.FileName );
-      ListURL.RemoveAll( url => true );
-      ListURL.AddRange( list );
+      listURL.RemoveAll( url => true );
+      listURL.AddRange( list );
       UpdateListURL();
     }
 
@@ -276,12 +276,12 @@ namespace WebTraffic {
     private void fSaveListURL_Click (object sender, EventArgs e) {
       DialogResult dRslt = dlgSaveListURL.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
-      File.WriteAllLines( dlgSaveListURL.FileName, ListURL );
+      File.WriteAllLines( dlgSaveListURL.FileName, listURL );
     }
 
     // update access rounds upon focus change
     private void fRounds_Leave (object sender, EventArgs e) {
-      int.TryParse( fRounds.Text, out Round.Stop );
+      int.TryParse( fRounds.Text, out round.Stop );
       UpdateProgress();
     }
 
@@ -290,8 +290,8 @@ namespace WebTraffic {
       double temp;
 
       double.TryParse( fStayTime.Text, out temp );
-      StayTime = (int) ( temp * 1000 );
-      StayTime = ( StayTime <= 0 ) ? 4000 : StayTime;
+      stayTime = (int) ( temp * 1000 );
+      stayTime = ( stayTime <= 0 ) ? 4000 : stayTime;
     }
 
     // update next time upon focus change
@@ -299,61 +299,61 @@ namespace WebTraffic {
       double temp;
 
       double.TryParse( fNextTime.Text, out temp );
-      NextTime = (int) ( temp * 1000 );
-      NextTime = ( NextTime <= 0 ) ? 4000 : NextTime;
+      nextTime = (int) ( temp * 1000 );
+      nextTime = ( nextTime <= 0 ) ? 4000 : nextTime;
     }
 
     // update browser count upon focus change
     private void fBrowserCount_Leave (object sender, EventArgs e) {
-      int.TryParse( fBrowserCount.Text, out BrowserCount );
+      int.TryParse( fBrowserCount.Text, out browserCount );
     }
 
     // internal minimize button
     private void fWinMinimize_Click (object sender, EventArgs e) {
-      Window.WindowState = FormWindowState.Minimized;
+      window.WindowState = FormWindowState.Minimized;
     }
 
     // internal close button
     private void fWinClose_Click (object sender, EventArgs e) {
-      Window.Close();
+      window.Close();
     }
 
     // select path for chrome browser
     private void fBrowserPath_Chrome_Click (object sender, EventArgs e) {
       DialogResult dRslt = dlgSelectBrowser.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
-      BrowserPath[(int) hkBrowser.Chrome] = dlgSelectBrowser.FileName;
-      File.WriteAllLines( SettingsFile, BrowserPath );
+      browserPath[(int) Browser.Chrome] = dlgSelectBrowser.FileName;
+      File.WriteAllLines( settingsFile, browserPath );
     }
 
     // select path for opera browser
     private void fBrowserPath_Opera_Click (object sender, EventArgs e) {
       DialogResult dRslt = dlgSelectBrowser.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
-      BrowserPath[(int) hkBrowser.Opera] = dlgSelectBrowser.FileName;
-      File.WriteAllLines( SettingsFile, BrowserPath );
+      browserPath[(int) Browser.Opera] = dlgSelectBrowser.FileName;
+      File.WriteAllLines( settingsFile, browserPath );
     }
 
     // select path for firefox browser
     private void fBrowserPath_Firefox_Click (object sender, EventArgs e) {
       DialogResult dRslt = dlgSelectBrowser.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
-      BrowserPath[(int) hkBrowser.Firefox] = dlgSelectBrowser.FileName;
-      File.WriteAllLines( SettingsFile, BrowserPath );
+      browserPath[(int) Browser.Firefox] = dlgSelectBrowser.FileName;
+      File.WriteAllLines( settingsFile, browserPath );
     }
 
     // select path for ie browser
     private void fBrowserPath_IE_Click (object sender, EventArgs e) {
       DialogResult dRslt = dlgSelectBrowser.ShowDialog();
       if (dRslt != System.Windows.Forms.DialogResult.OK) return;
-      BrowserPath[(int) hkBrowser.IE] = dlgSelectBrowser.FileName;
-      File.WriteAllLines( SettingsFile, BrowserPath );
+      browserPath[(int) Browser.IE] = dlgSelectBrowser.FileName;
+      File.WriteAllLines( settingsFile, browserPath );
     }
 
     // select chrome browser (if path available)
     private void fBrowserSelect_Chrome_Click (object sender, EventArgs e) {
-      if (BrowserPath[(int) hkBrowser.Chrome] == "") return;
-      Browser = hkBrowser.Chrome;
+      if (browserPath[(int) Browser.Chrome] == "") return;
+      browser = Browser.Chrome;
       fBrowserSelect_Chrome.BackColor = Color.DimGray;
       fBrowserSelect_Opera.BackColor = Color.White;
       fBrowserSelect_Firefox.BackColor = Color.White;
@@ -362,8 +362,8 @@ namespace WebTraffic {
 
     // select opera browser (if path available)
     private void fBrowserSelect_Opera_Click (object sender, EventArgs e) {
-      if (BrowserPath[(int) hkBrowser.Opera] == "") return;
-      Browser = hkBrowser.Opera;
+      if (browserPath[(int) Browser.Opera] == "") return;
+      browser = Browser.Opera;
       fBrowserSelect_Opera.BackColor = Color.DimGray;
       fBrowserSelect_Chrome.BackColor = Color.White;
       fBrowserSelect_Firefox.BackColor = Color.White;
@@ -372,8 +372,8 @@ namespace WebTraffic {
 
     // select firefox browser (if path available)
     private void fBrowserSelect_Firefox_Click (object sender, EventArgs e) {
-      if (BrowserPath[(int) hkBrowser.Firefox] == "") return;
-      Browser = hkBrowser.Firefox;
+      if (browserPath[(int) Browser.Firefox] == "") return;
+      browser = Browser.Firefox;
       fBrowserSelect_Firefox.BackColor = Color.DimGray;
       fBrowserSelect_Chrome.BackColor = Color.White;
       fBrowserSelect_Opera.BackColor = Color.White;
@@ -382,8 +382,8 @@ namespace WebTraffic {
 
     // select ie browser (if path available)
     private void fBrowserSelect_IE_Click (object sender, EventArgs e) {
-      if (BrowserPath[(int) hkBrowser.IE] == "") return;
-      Browser = hkBrowser.IE;
+      if (browserPath[(int) Browser.IE] == "") return;
+      browser = Browser.IE;
       fBrowserSelect_IE.BackColor = Color.DimGray;
       fBrowserSelect_Chrome.BackColor = Color.White;
       fBrowserSelect_Opera.BackColor = Color.White;
@@ -392,33 +392,33 @@ namespace WebTraffic {
 
     // updates mouse status to pressed
     private void WebTraffic_MouseDown (object sender, MouseEventArgs e) {
-      MouseStatus.Pressed = true;
-      MouseStatus.LastPosition = MousePosition;
+      mouseStatus.Pressed = true;
+      mouseStatus.LastPosition = MousePosition;
     }
 
     // updates mouse status to left
     private void WebTraffic_MouseUp (object sender, MouseEventArgs e) {
-      MouseStatus.Pressed = false;
+      mouseStatus.Pressed = false;
     }
 
     // moves the window
     private void WebTraffic_MouseMove (object sender, MouseEventArgs e) {
-      if (MouseStatus.Pressed) {
-        Top += ( MousePosition.Y - MouseStatus.LastPosition.Y );
-        Left += ( MousePosition.X - MouseStatus.LastPosition.X );
+      if (mouseStatus.Pressed) {
+        Top += ( MousePosition.Y - mouseStatus.LastPosition.Y );
+        Left += ( MousePosition.X - mouseStatus.LastPosition.X );
       }
-      MouseStatus.LastPosition = MousePosition;
+      mouseStatus.LastPosition = MousePosition;
     }
 
     // select force close option or not
     private void fBrowserForceClose_CheckedChanged (object sender, EventArgs e) {
-      BrowserForceClose = fBrowserForceClose.Checked;
+      browserForceClose = fBrowserForceClose.Checked;
     }
 
     // if enter key is pressed, add to url list
     private void fURL_KeyPress (object sender, KeyPressEventArgs e) {
       if (e.KeyChar == '\r' && fURL.Text.Length > 0) {
-        ListURL.Add( fURL.Text );
+        listURL.Add( fURL.Text );
         fURL.Text = "";
         UpdateListURL();
       }
