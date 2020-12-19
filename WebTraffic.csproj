@@ -14,7 +14,7 @@
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>D:\Home\Develop\WebTraffic\publish\</PublishUrl>
+    <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -53,7 +53,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>web-icon.ico</ApplicationIcon>
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>43856E9A6FC45C772F82AD8ED6303A895692E4C1</ManifestCertificateThumbprint>
@@ -86,32 +86,32 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Form1.cs">
+    <Compile Include="Form.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form1.Designer.cs">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <Compile Include="Form.Designer.cs">
+      <DependentUpon>Form.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Form1.resx">
-      <DependentUpon>Form1.cs</DependentUpon>
+    <EmbeddedResource Include="Form.resx">
+      <DependentUpon>Form.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -119,20 +119,19 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ico\web-icon.ico" />
-    <Content Include="img\Chrome.png" />
-    <None Include="img\Chrome_small.png" />
-    <None Include="img\Icon-Browser-Opera_small.png" />
-    <None Include="img\Firefox-icon_small.png" />
-    <None Include="img\Internet_Explorer_7_Logo_small.png" />
-    <Content Include="web-icon.ico" />
-    <None Include="img\close.png" />
-    <Content Include="img\Firefox-icon.png" />
-    <Content Include="img\Icon-Browser-Opera.png" />
-    <Content Include="img\Internet_Explorer_7_Logo.png" />
-    <None Include="img\minimize-btn.png" />
-    <Content Include="img\web-icon.png" />
-    <Content Include="img\web_full.png" />
+    <Content Include="Icons\Icon.ico" />
+    <Content Include="Images\BrChrome.png" />
+    <None Include="Images\BrChrome_s.png" />
+    <None Include="Images\BrOpera_s.png" />
+    <None Include="Images\BrFirefox_s.png" />
+    <None Include="Images\BrIE_s.png" />
+    <Content Include="Icon.ico" />
+    <None Include="Images\BtnClose.png" />
+    <Content Include="Images\BrFirefox.png" />
+    <Content Include="Images\BrOpera.png" />
+    <Content Include="Images\BrIE.png" />
+    <None Include="Images\BtnMin.png" />
+    <Content Include="Images\Icon.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">

@@ -368,7 +368,7 @@
 			// fWinMinimize
 			// 
 			this.fWinMinimize.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fWinMinimize.BackgroundImage = global::WebTraffic.Properties.Resources.minimize_btn;
+			this.fWinMinimize.BackgroundImage = global::WebTraffic.Properties.Resources.BtnMin;
 			this.fWinMinimize.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fWinMinimize.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fWinMinimize.Location = new System.Drawing.Point( 895, 0 );
@@ -381,7 +381,7 @@
 			// fWinClose
 			// 
 			this.fWinClose.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fWinClose.BackgroundImage = global::WebTraffic.Properties.Resources.close;
+			this.fWinClose.BackgroundImage = global::WebTraffic.Properties.Resources.BtnClose;
 			this.fWinClose.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fWinClose.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fWinClose.Location = new System.Drawing.Point( 926, 0 );
@@ -394,7 +394,7 @@
 			// fBrowserPath_IE
 			// 
 			this.fBrowserPath_IE.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_IE.BackgroundImage = global::WebTraffic.Properties.Resources.Internet_Explorer_7_Logo_small;
+			this.fBrowserPath_IE.BackgroundImage = global::WebTraffic.Properties.Resources.BrIE_s;
 			this.fBrowserPath_IE.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_IE.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_IE.Location = new System.Drawing.Point( 343, 300 );
@@ -407,7 +407,7 @@
 			// fBrowserPath_Firefox
 			// 
 			this.fBrowserPath_Firefox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Firefox.BackgroundImage = global::WebTraffic.Properties.Resources.Firefox_icon_small;
+			this.fBrowserPath_Firefox.BackgroundImage = global::WebTraffic.Properties.Resources.BrFirefox_s;
 			this.fBrowserPath_Firefox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Firefox.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Firefox.Location = new System.Drawing.Point( 343, 248 );
@@ -420,7 +420,7 @@
 			// fBrowserPath_Opera
 			// 
 			this.fBrowserPath_Opera.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Opera.BackgroundImage = global::WebTraffic.Properties.Resources.Icon_Browser_Opera_small;
+			this.fBrowserPath_Opera.BackgroundImage = global::WebTraffic.Properties.Resources.BrOpera_s;
 			this.fBrowserPath_Opera.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Opera.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Opera.Location = new System.Drawing.Point( 343, 196 );
@@ -433,7 +433,7 @@
 			// fBrowserPath_Chrome
 			// 
 			this.fBrowserPath_Chrome.BackColor = System.Drawing.SystemColors.ControlLightLight;
-			this.fBrowserPath_Chrome.BackgroundImage = global::WebTraffic.Properties.Resources.Chrome_small;
+			this.fBrowserPath_Chrome.BackgroundImage = global::WebTraffic.Properties.Resources.BrChrome_s;
 			this.fBrowserPath_Chrome.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.fBrowserPath_Chrome.Font = new System.Drawing.Font( "Trebuchet MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ( (byte) ( 0 ) ) );
 			this.fBrowserPath_Chrome.Location = new System.Drawing.Point( 343, 144 );
@@ -445,7 +445,7 @@
 			// 
 			// dWinLogo
 			// 
-			this.dWinLogo.BackgroundImage = global::WebTraffic.Properties.Resources.web_icon;
+			this.dWinLogo.BackgroundImage = global::WebTraffic.Properties.Resources.Icon;
 			this.dWinLogo.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
 			this.dWinLogo.Location = new System.Drawing.Point( 0, 0 );
 			this.dWinLogo.Name = "dWinLogo";
