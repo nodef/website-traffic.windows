@@ -1,82 +1,87 @@
-# webtraffic
+**WebTraffic** is a windows app to generate traffic to one or multiple
+websites as a bot for selected duration.
+<br>
+<br>
 
-**webtraffic** is a windows app to generate traffic to one or multiple
-websites as a bot for selected duration. This is especially useful for
-increasing the views of a youtube video, or increase the page views of a
-webite. No pain of refreshing pages again and again, or paying someone to
-do the same.
-
-
-## demo
-
-<img src="/assets/img/0.png" width="70%"><br/>
+![](Results/00.png)<br>
 Open **webtraffic**. Old settings are loaded automatically.
-<br/><br/>
+<br>
+<br>
 
-
-<img src="/assets/img/1.png" width="70%"><br/>
+![](Results/01.png)<br>
 `Select Browser` Path for Google Chrome (first time only).
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/2.png" width="70%"><br/>
+![](Results/02.png)<br>
 `Select Browser` Path for Internet Explorer (first time only).
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/3.png" width="70%"><br/>
+![](Results/03.png)<br>
 Now Google Chrome or Internet Explorer can be selected. <br/>
 Selected choice is saved automatically.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/4.png" width="70%"><br/>
+![](Results/04.png)<br>
 Add URLs to be auto-viewed in `URL List` using `Add URL`.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/5.png" width="70%"><br/>
+![](Results/05.png)<br>
 `Remove URL` can be used to remove a specific URL.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/6.png" width="70%"><br/>
+![](Results/06.png)<br>
 `Save URL list` to a location (optional). <br/>
 This way it can be loaded back later.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/7.png" width="70%"><br/>
+![](Results/07.png)<br>
 `Load URL list` from a location (optional).
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/8.png" width="70%"><br/>
-`Rounds` is no. of times to perform auto-view. <br/>
-`Stay Time` is the view time of a page (URL). <br/>
-`Next Time` time delay between 2 consecutive views. <br/>
-`Browser Count` is the number of browser windows to use. <br/>
+![](Results/08.png)<br>
+`Rounds` is no. of times to perform auto-view. <br>
+`Stay Time` is the view time of a page (URL). <br>
+`Next Time` time delay between 2 consecutive views. <br>
+`Browser Count` is the number of browser windows to use. <br>
 `Browser Select` Internet Explorer and `Start`.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/9.png" width="70%"><br/>
+![](Results/09.png)<br>
 **webtraffic** automatically opens up pages mentioned in the `URL List`.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/10.png" width="70%"><br/>
+![](Results/10.png)<br>
 After `Stay Time` next batch of 4 URLs is accessed.
-<br/><br/>
+<br>
+<br>
 
 
 
-<img src="/assets/img/11.png" width="70%"><br/>
+![](Results/11.png)<br>
 Progress is calculated based or desired `Rounds`.
-<br/><br/>
+<br>
+<br>
 
 
-<img src="/assets/img/12.png" width="70%"><br/>
+![](Results/12.png)<br>
 `Stop` closes all opened browser windows.
-<br/><br/>
-
+<br>
+<br>
