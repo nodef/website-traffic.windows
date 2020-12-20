@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebTraffic.Properties
+namespace WebsiteTraffic.Properties
 {
 
 

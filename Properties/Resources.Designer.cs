@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace WebTraffic.Properties {
+namespace WebsiteTraffic.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace WebTraffic.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WebTraffic.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("WebsiteTraffic.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -103,9 +103,9 @@ namespace WebTraffic.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap BrIE {
+        internal static System.Drawing.Bitmap BrEdge {
             get {
-                object obj = ResourceManager.GetObject("BrIE", resourceCulture);
+                object obj = ResourceManager.GetObject("BrEdge", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +113,9 @@ namespace WebTraffic.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap BrIE_s {
+        internal static System.Drawing.Bitmap BrEdge_s {
             get {
-                object obj = ResourceManager.GetObject("BrIE_s", resourceCulture);
+                object obj = ResourceManager.GetObject("BrEdge_s", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

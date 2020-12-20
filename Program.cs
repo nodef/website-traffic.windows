@@ -2,7 +2,7 @@
 using System.Windows.Forms;
 
 
-namespace WebTraffic {
+namespace WebsiteTraffic {
 	static class Program {
 
 		/// <summary>
@@ -12,7 +12,7 @@ namespace WebTraffic {
 		static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run( new WebTraffic() );
+			Application.Run(new MainForm());
 		}
 	}
 }

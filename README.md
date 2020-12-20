@@ -1,10 +1,10 @@
-**WebTraffic** is a windows app to generate traffic to one or multiple
+**WebsiteTraffic** is a windows app to generate traffic to one or multiple
 websites as a bot for selected duration.
 <br>
 <br>
 
 ![](Results/00.png)<br>
-Open **webtraffic**. Old settings are loaded automatically.
+Open **WebsiteTraffic**. Old settings are loaded automatically.
 <br>
 <br>
 
@@ -63,7 +63,7 @@ This way it can be loaded back later.
 
 
 ![](Results/09.png)<br>
-**webtraffic** automatically opens up pages mentioned in the `URL List`.
+**WebsiteTraffic** automatically opens up pages mentioned in the `URL List`.
 <br>
 <br>
 
