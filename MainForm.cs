@@ -480,6 +480,7 @@ namespace WebsiteTraffic {
 
 
     private static void SetOpenFilePath(OpenFileDialog d, string p) {
+      if (p == "") return;
       d.InitialDirectory = Path.GetDirectoryName(p);
       d.FileName = p;
     }
