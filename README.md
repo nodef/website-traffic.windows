@@ -85,3 +85,5 @@ Progress is calculated based or desired `Rounds`.
 `Stop` closes all opened browser windows.
 <br>
 <br>
+
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/website-traffic.windows)
